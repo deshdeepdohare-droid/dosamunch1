@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dosamuch | The Golden Heritage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --amber-rich: #854d0e;
+            --amber-glow: #ca8a04;
+            --saffron: #facc15;
+            --cream-silk: #fffdf5;
+            --alabaster: #fffef2; /* Light Yellow/Cream Theme */
+            --sunlight: #fefce8;
+            --charcoal: #1c1917;
+            --gold-gradient: linear-gradient(135deg, #a16207 0%, #eab308 100%);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--alabaster);
+            color: var(--charcoal);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .font-serif { font-family: 'Cormorant Garamond', serif; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--alabaster); }
+        ::-webkit-scrollbar-thumb { background: var(--saffron); border-radius: 20px; }
+
+        /* Advanced Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-right {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .slide-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Responsive Glass Header */
+        .glass-header {
+            background: rgba(255, 254, 242, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(161, 98, 7, 0.1);
+        }
+
+        .royal-card {
+            background: #ffffff;
+            border: 1px solid rgba(161, 98, 7, 0.08);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        .royal-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px -15px rgba(161, 98, 7, 0.15);
+            border-color: var(--saffron);
+        }
+
+        .nav-link {
+            position: relative;
+            letter-spacing: 0.2em;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--charcoal);
+            transition: all 0.3s;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--amber-rich);
+            transition: width 0.4s ease;
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 80%;
+        }
+
+        /* AUTO-SLIDING GALLERY */
+        .auto-gallery-container {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: hidden;
+            padding: 2rem 0;
+            white-space: nowrap;
+        }
+
+        .gallery-track {
+            display: flex;
+            gap: 1.5rem;
+            animation: scrollGallery 60s linear infinite;
+        }
+
+        @keyframes scrollGallery {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .gallery-slide {
+            flex: 0 0 280px;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        @media (min-width: 768px) {
+            .gallery-slide { flex: 0 0 450px; height: 600px; }
+        }
+
+        .gallery-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 2s ease;
+        }
+
+        /* Image Zoom for Menu */
+        .card-img-container {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .card-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Buttons */
+        .btn-saffron {
+            background: var(--gold-gradient);
+            color: white;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .btn-saffron:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(161, 98, 7, 0.3);
+        }
+
+        /* Landing Entrance */
+        #landing-entrance {
+            position: fixed;
+            inset: 0;
+            background: var(--alabaster);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: all 1s cubic-bezier(0.7, 0, 0.3, 1);
+        }
+
+        #landing-entrance.exit {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        /* Toast Notifications */
+        #notification {
+            visibility: hidden;
+            min-width: 280px;
+            background-color: var(--charcoal);
+            color: #ffffff;
+            text-align: center;
+            padding: 15px 30px;
+            position: fixed;
+            z-index: 3000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 4px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        #notification.show { visibility: visible; animation: slideUpToast 0.5s forwards; }
+
+        @keyframes slideUpToast { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
+
+        .silk-texture {
+            background-image: url("https://www.transparenttextures.com/patterns/cream-paper.png");
+        }
+
+        /* Mobile Menu */
+        #mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--alabaster);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            transform: translateY(-100%);
+            transition: transform 0.5s ease;
+        }
+
+        #mobile-menu.active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="silk-texture">
+
+    <!-- Landing Splash Entrance -->
+    <div id="landing-entrance">
+        <div class="text-center">
+            <div class="w-20 h-20 border-2 border-amber-rich rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
+                <i data-lucide="crown" class="w-10 h-10 text-amber-rich"></i>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-serif font-bold tracking-widest text-charcoal mb-4">DOSAMUCH</h1>
+            <p class="text-amber-rich tracking-widest text-[10px] uppercase font-bold mb-12">The Golden Standard</p>
+            <button onclick="enterExperience()" class="px-10 py-4 border border-amber-rich text-[10px] tracking-widest uppercase font-bold hover:bg-amber-rich hover:text-white transition-all">
+                Enter Royale Avenue
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification">Action Completed</div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-header opacity-0 transition-opacity duration-700" id="main-nav">
+        <div class="max-w-screen-2xl mx-auto px-6 md:px-12 py-5 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="navigateTo('home')">
+                <div class="w-10 h-10 border border-amber-rich flex items-center justify-center rounded-full group-hover:bg-saffron transition-all">
+                    <i data-lucide="sun" class="w-5 h-5 text-amber-rich"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl md:text-2xl font-serif font-bold tracking-tight text-charcoal">DOSAMUCH</span>
+                    <span class="text-[7px] tracking-widest text-amber-rich uppercase font-bold">Royal Dining</span>
+                </div>
+            </div>
+
+            <!-- Desktop Links -->
+            <div class="hidden lg:flex items-center gap-10">
+                <button onclick="navigateTo('home')" id="nav-home" class="nav-link uppercase">Avenue</button>
+                <button onclick="navigateTo('menu')" id="nav-menu" class="nav-link uppercase">The Menu</button>
+                <button onclick="navigateTo('booking')" id="nav-booking" class="nav-link uppercase">Reserve</button>
+                <button onclick="navigateTo('heritage')" id="nav-heritage" class="nav-link uppercase">Heritage</button>
+            </div>
+
+            <!-- Mobile Actions -->
+            <div class="flex items-center gap-4">
+                <button onclick="toggleCart()" class="relative group p-2">
+                    <i data-lucide="shopping-bag" class="w-6 h-6 text-charcoal"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-amber-rich text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full">0</span>
+                </button>
+                <button class="lg:hidden p-2" onclick="toggleMobileMenu()">
+                    <i data-lucide="menu" id="menu-icon" class="w-6 h-6 text-charcoal"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu">
+        <button onclick="toggleMobileMenu()" class="absolute top-8 right-8"><i data-lucide="x" class="w-8 h-8"></i></button>
+        <button onclick="mobileNavigate('home')" class="text-2xl font-serif font-bold tracking-widest">AVENUE</button>
+        <button onclick="mobileNavigate('menu')" class="text-2xl font-serif font-bold tracking-widest">THE MENU</button>
+        <button onclick="mobileNavigate('booking')" class="text-2xl font-serif font-bold tracking-widest">RESERVE TABLE</button>
+        <button onclick="mobileNavigate('heritage')" class="text-2xl font-serif font-bold tracking-widest">HERITAGE</button>
+    </div>
+
+    <!-- Main Content -->
+    <main id="view-container">
+        <!-- Content Injected via Script -->
+    </main>
+
+    <!-- Cart Panel -->
+    <div id="cart-overlay" class="fixed inset-0 z-[60] invisible">
+        <div class="absolute inset-0 bg-charcoal/40 backdrop-blur-sm transition-opacity duration-500" onclick="toggleCart()"></div>
+        <div id="cart-panel" class="absolute right-0 top-0 bottom-0 w-full max-w-lg bg-white shadow-2xl transform translate-x-full transition-transform duration-700 flex flex-col">
+            <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-sunlight">
+                <h3 class="text-2xl font-serif font-bold text-charcoal tracking-widest uppercase">The Selection</h3>
+                <button onclick="toggleCart()"><i data-lucide="x" class="w-8 h-8 text-gray-400 hover:text-charcoal"></i></button>
+            </div>
+
+            <div id="cart-items" class="flex-1 overflow-y-auto p-8 space-y-8 no-scrollbar">
+                <!-- Cart Items -->
+            </div>
+
+            <div class="p-8 bg-white border-t border-gray-100 space-y-8">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs tracking-widest font-bold text-gray-400">GRAND ESTIMATE</span>
+                    <span id="grand-total" class="text-3xl font-serif font-bold text-amber-rich">₹0</span>
+                </div>
+                <div class="space-y-4">
+                    <input type="text" id="guest-name" placeholder="GUEST NAME" class="w-full bg-sunlight/50 border-b border-amber-rich/20 p-4 text-xs font-bold outline-none uppercase">
+                    <textarea id="guest-address" placeholder="DESTINATION ADDRESS" rows="2" class="w-full bg-sunlight/50 border-b border-amber-rich/20 p-4 text-xs font-bold outline-none uppercase"></textarea>
+                </div>
+                <button onclick="sendOrderToWhatsApp()" class="btn-saffron w-full py-6 flex items-center justify-center gap-4 text-xs font-bold uppercase">
+                    Finalize Order <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-charcoal text-sunlight py-20 px-6">
+        <div class="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            <div class="lg:col-span-2">
+                <h2 class="text-4xl font-serif font-bold tracking-widest mb-6">DOSAMUCH</h2>
+                <p class="text-sunlight/40 max-w-sm leading-relaxed text-sm">Where stone-ground heritage meets the diamond standard of modern dining. A journey through artisanal flavors.</p>
+            </div>
+            <div>
+                <h4 class="text-saffron uppercase tracking-widest text-[10px] font-bold mb-6">Discover</h4>
+                <div class="flex flex-col gap-3 text-sunlight/40 text-[10px] tracking-widest font-bold uppercase">
+                    <button onclick="navigateTo('menu')" class="text-left hover:text-saffron">Menu</button>
+                    <button onclick="navigateTo('booking')" class="text-left hover:text-saffron">Reservations</button>
+                    <button onclick="navigateTo('heritage')" class="text-left hover:text-saffron">Heritage</button>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-saffron uppercase tracking-widest text-[10px] font-bold mb-6">Contact</h4>
+                <p class="text-sunlight/40 text-[10px] tracking-widest uppercase">Mumbai • +91 900 000 0000</p>
+                <p class="text-sunlight/40 text-[10px] tracking-widest uppercase mt-2">royale@dosamuch.com</p>
+            </div>
+        </div>
+        <div class="pt-10 border-t border-sunlight/5 text-center text-[8px] tracking-[0.5em] text-sunlight/20 uppercase">
+            © 2024 DOSAMUCH ROYALE GROUP
+        </div>
+    </footer>
+
+    <script>
+        const WHATSAPP_NUMBER = "919000000000"; // Replace with your actual WhatsApp Number
+        let cart = [];
+        let activePage = 'home';
+        let activeMenuCategory = 'ALL';
+
+        const fullMenu = [
+            { id: 1, name: "SAADA DOSA", price: 59, category: "DOSA" },
+            { id: 2, name: "CHEESE SAADA DOSA", price: 79, category: "DOSA" },
+            { id: 11, name: "PANEER SAADA DOSA", price: 89, category: "DOSA" },
+            { id: 20, name: "JAIN JINI DOSA", price: 159, category: "JAIN" },
+            { id: 21, name: "JAIN PIZZA DOSA", price: 189, category: "JAIN" },
+            { id: 26, name: "JINI DOSA", price: 159, category: "SIGNATURE" },
+            { id: 55, name: "BURJ KHALIFA DOSA", price: 379, category: "SIGNATURE" },
+            { id: 53, name: "BAHUBALI DOSA", price: 209, category: "SIGNATURE" },
+            { id: 85, name: "CHEESE BURST PIZZA", price: 219, category: "PIZZA" },
+            { id: 119, name: "FERRERO ROCHER SHAKE", price: 229, category: "SHAKES" }
+        ];
+
+        const menuImages = {
+            "DOSA": "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&q=80&w=600",
+            "JAIN": "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&q=80&w=600",
+            "SIGNATURE": "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&q=80&w=600",
+            "PIZZA": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=600",
+            "SHAKES": "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&q=80&w=600",
+            "DEFAULT": "https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&q=80&w=600"
+        };
+
+        function enterExperience() {
+            document.getElementById('landing-entrance').classList.add('exit');
+            document.getElementById('main-nav').classList.remove('opacity-0');
+            navigateTo('home');
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('active');
+        }
+
+        function mobileNavigate(page) {
+            toggleMobileMenu();
+            navigateTo(page);
+        }
+
+        function navigateTo(page) {
+            activePage = page;
+            const container = document.getElementById('view-container');
+            container.innerHTML = `<div class="reveal active">${renderPage(page)}</div>`;
+            updateNavUI();
+            lucide.createIcons();
+            initAnimations();
+            window.scrollTo(0, 0);
+
+            if(page === 'menu') {
+                renderMenuCategories();
+                renderMenuItems();
+            }
+        }
+
+        function updateNavUI() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active', 'text-amber-rich');
+                if(link.id === `nav-${activePage}`) link.classList.add('active', 'text-amber-rich');
+            });
+        }
+
+        function renderPage(page) {
+            switch(page) {
+                case 'home': return renderHome();
+                case 'menu': return renderMenuPage();
+                case 'booking': return renderBooking();
+                case 'heritage': return renderHeritage();
+                default: return renderHome();
+            }
+        }
+
+        function renderHome() {
+            return `
+                <section class="min-h-screen flex items-center justify-center bg-sunlight pt-32 px-6">
+                    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div class="slide-right active">
+                            <span class="text-amber-rich tracking-widest text-[10px] uppercase font-bold mb-6 block">Artisanal Golden Era</span>
+                            <h1 class="text-5xl md:text-8xl font-serif font-bold text-charcoal leading-tight mb-8">Pure <br><span class="italic text-saffron font-normal underline decoration-1 underline-offset-8">Grains</span>.</h1>
+                            <p class="text-charcoal/50 text-lg mb-10 leading-relaxed max-w-lg">Stone-ground heritage fermented for 14 hours. Experience the pinnacle of South Indian texture and depth.</p>
+                            <button onclick="navigateTo('menu')" class="btn-saffron px-10 py-5 text-[10px] shadow-lg">The Anthology</button>
+                        </div>
+                        <div class="reveal active">
+                            <img src="${menuImages.DEFAULT}" class="w-full rounded-sm shadow-2xl">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="py-24 px-6 bg-white overflow-hidden">
+                    <div class="max-w-7xl mx-auto text-center mb-16">
+                        <h2 class="text-4xl font-serif font-bold text-charcoal mb-4">Cinematic Journal</h2>
+                        <div class="w-16 h-1 bg-saffron mx-auto"></div>
+                    </div>
+                    <div class="auto-gallery-container reveal">
+                        <div class="gallery-track">
+                            ${renderGallerySlides()}${renderGallerySlides()}
+                        </div>
+                    </div>
+                </section>
+
+                <section class="py-24 px-6 bg-sunlight">
+                    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                        <div class="reveal">
+                            <img src="${menuImages.SIGNATURE}" class="w-full rounded shadow-xl">
+                        </div>
+                        <div class="reveal">
+                            <span class="text-amber-rich tracking-widest text-[10px] uppercase font-bold mb-4 block italic">Our Secret</span>
+                            <h3 class="text-3xl font-serif font-bold text-charcoal mb-6">The 14-Hour Ritual</h3>
+                            <p class="text-charcoal/50 text-sm leading-loose mb-8">Every grain is hand-selected and stone-milled to achieve a crystalline texture that mirrors the purity of the grains themselves.</p>
+                            <button onclick="navigateTo('heritage')" class="text-charcoal text-[10px] font-bold tracking-widest uppercase border-b-2 border-saffron pb-2">Learn More</button>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function renderGallerySlides() {
+            const slides = [
+                { url: menuImages.DOSA, title: "The Pour" },
+                { url: menuImages.SIGNATURE, title: "The Crisp" },
+                { url: menuImages.PIZZA, title: "Fusion Art" },
+                { url: menuImages.SHAKES, title: "Sweet Royale" }
+            ];
+            return slides.map(s => `
+                <div class="gallery-slide">
+                    <img src="${s.url}">
+                    <div class="absolute bottom-6 left-6 text-white z-10">
+                        <p class="text-[8px] font-bold tracking-widest uppercase mb-1">Ritual</p>
+                        <h4 class="text-xl font-serif italic">${s.title}</h4>
+                    </div>
+                    <div class="absolute inset-0 bg-black/30"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderMenuPage() {
+            return `
+                <div class="pt-40 pb-24 px-6 max-w-screen-2xl mx-auto">
+                    <div class="text-center mb-16">
+                        <h2 class="text-6xl font-serif font-bold text-charcoal italic mb-8">The Menu</h2>
+                        <div id="cat-nav" class="flex flex-wrap justify-center gap-4 no-scrollbar"></div>
+                    </div>
+                    <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+                </div>
+            `;
+        }
+
+        function renderBooking() {
+            return `
+                <div class="pt-40 pb-24 px-6 max-w-3xl mx-auto text-center">
+                    <span class="text-amber-rich tracking-widest text-[10px] uppercase font-bold mb-6 block">Reservations</span>
+                    <h2 class="text-5xl font-serif font-bold text-charcoal mb-12">Reserve Your Table</h2>
+                    <div class="bg-white p-10 shadow-xl rounded-sm text-left space-y-8">
+                        <div>
+                            <label class="text-[9px] tracking-widest font-bold text-gray-400 block mb-2 uppercase">Guest Name</label>
+                            <input type="text" id="book-name" placeholder="E.G. JOHN DOE" class="w-full border-b border-gray-100 p-3 outline-none focus:border-saffron uppercase text-xs font-bold">
+                        </div>
+                        <div class="grid grid-cols-2 gap-8">
+                            <div>
+                                <label class="text-[9px] tracking-widest font-bold text-gray-400 block mb-2 uppercase">Persons</label>
+                                <select id="book-persons" class="w-full border-b border-gray-100 p-3 outline-none focus:border-saffron text-xs font-bold">
+                                    <option value="1">1 Person</option>
+                                    <option value="2">2 Persons</option>
+                                    <option value="4">4 Persons</option>
+                                    <option value="6">6 Persons</option>
+                                    <option value="10">Large Group (10+)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-[9px] tracking-widest font-bold text-gray-400 block mb-2 uppercase">Preferred Date</label>
+                                <input type="date" id="book-date" class="w-full border-b border-gray-100 p-3 outline-none focus:border-saffron text-xs font-bold">
+                            </div>
+                        </div>
+                        <button onclick="bookViaWhatsApp()" class="btn-saffron w-full py-6 flex items-center justify-center gap-4 text-xs font-bold">
+                            Request Booking <i data-lucide="calendar"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderHeritage() {
+            return `
+                <div class="pt-40 pb-24 px-6 max-w-4xl mx-auto text-center">
+                    <h2 class="text-6xl font-serif font-bold text-charcoal italic mb-12 leading-snug">Ancient Rituals. <br>Modern Mastery.</h2>
+                    <p class="text-charcoal/50 text-xl font-light leading-relaxed mb-16 italic">Dosamuch was founded to restore the dignity of the South Indian Dosa. We refuse industrial flours. We stone-grind our grains daily.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-gray-100 pt-16">
+                        <div><h4 class="text-3xl font-serif text-amber-rich mb-2">14H</h4><p class="text-[9px] font-bold opacity-30 tracking-widest uppercase">Bloom Period</p></div>
+                        <div><h4 class="text-3xl font-serif text-amber-rich mb-2">Organic</h4><p class="text-[9px] font-bold opacity-30 tracking-widest uppercase">Ingredient Sourcing</p></div>
+                        <div><h4 class="text-3xl font-serif text-amber-rich mb-2">Stone</h4><p class="text-[9px] font-bold opacity-30 tracking-widest uppercase">Mill Process</p></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMenuCategories() {
+            const container = document.getElementById('cat-nav');
+            const cats = ["ALL", ...new Set(fullMenu.map(m => m.category))];
+            container.innerHTML = cats.map(cat => `
+                <button onclick="setMenuCategory('${cat}')" class="px-8 py-3 rounded-full text-[10px] tracking-widest font-bold uppercase transition-all ${activeMenuCategory === cat ? 'bg-saffron text-charcoal' : 'bg-white text-gray-300 hover:text-saffron'}">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function setMenuCategory(cat) {
+            activeMenuCategory = cat;
+            renderMenuCategories();
+            renderMenuItems();
+        }
+
+        function renderMenuItems() {
+            const container = document.getElementById('menu-grid');
+            const filtered = fullMenu.filter(m => activeMenuCategory === 'ALL' || m.category === activeMenuCategory);
+            container.innerHTML = filtered.map((item, idx) => {
+                const img = menuImages[item.category] || menuImages.DEFAULT;
+                return `
+                <div class="royal-card slide-right active flex flex-col group">
+                    <div class="card-img-container">
+                        <img src="${img}">
+                    </div>
+                    <div class="p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-[8px] tracking-widest font-bold text-saffron uppercase">${item.category}</span>
+                            <span class="text-xl font-serif italic text-charcoal">₹${item.price}</span>
+                        </div>
+                        <h4 class="text-xl font-serif font-bold text-charcoal mb-6">${item.name}</h4>
+                        <button onclick="addToCart(${item.id})" class="text-[9px] tracking-widest font-bold uppercase text-gray-300 hover:text-amber-rich transition-colors">Select Selection</button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+            initAnimations();
+            lucide.createIcons();
+        }
+
+        function toggleCart() {
+            const overlay = document.getElementById('cart-overlay');
+            const panel = document.getElementById('cart-panel');
+            if(overlay.classList.contains('invisible')) {
+                overlay.classList.remove('invisible');
+                setTimeout(() => panel.style.transform = 'translateX(0)', 10);
+            } else {
+                panel.style.transform = 'translateX(100%)';
+                setTimeout(() => overlay.classList.add('invisible'), 700);
+            }
+        }
+
+        function addToCart(id) {
+            const item = fullMenu.find(m => m.id === id);
+            const exists = cart.find(c => c.id === id);
+            if(exists) exists.qty++;
+            else cart.push({...item, qty: 1});
+            updateCartUI();
+            showNotification(`${item.name} Selected`);
+        }
+
+        function updateCartUI() {
+            const count = document.getElementById('cart-count');
+            const list = document.getElementById('cart-items');
+            const total = document.getElementById('grand-total');
+            count.textContent = cart.reduce((a,b) => a + b.qty, 0);
+            if(cart.length === 0) {
+                list.innerHTML = `<div class="text-center py-20 text-gray-300 font-serif italic text-2xl">Your collection is empty.</div>`;
+            } else {
+                list.innerHTML = cart.map(item => `
+                    <div class="flex items-center gap-6 py-4 border-b border-gray-50">
+                        <div class="flex-1">
+                            <h5 class="text-xs font-bold tracking-widest text-charcoal uppercase">${item.name}</h5>
+                            <p class="text-saffron font-serif italic text-sm">₹${item.price}</p>
+                        </div>
+                        <div class="flex items-center gap-4 bg-sunlight px-4 py-2">
+                            <button onclick="changeQty(${item.id}, -1)" class="text-gray-300 hover:text-saffron"><i data-lucide="minus" class="w-3 h-3"></i></button>
+                            <span class="text-xs font-bold w-4 text-center">${item.qty}</span>
+                            <button onclick="changeQty(${item.id}, 1)" class="text-gray-300 hover:text-saffron"><i data-lucide="plus" class="w-3 h-3"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+                lucide.createIcons();
+            }
+            total.textContent = `₹${cart.reduce((a,b) => a + (b.price * b.qty), 0)}`;
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(c => c.id === id);
+            item.qty += delta;
+            if(item.qty <= 0) cart = cart.filter(c => c.id !== id);
+            updateCartUI();
+        }
+
+        function sendOrderToWhatsApp() {
+            const name = document.getElementById('guest-name').value;
+            const address = document.getElementById('guest-address').value;
+            if(!name || !address || cart.length === 0) return alert("Please complete guest details.");
+            
+            const grandTotal = cart.reduce((a,b) => (a + (b.price * b.qty)), 0);
+            
+            let text = `* DOSAMUCH ROYALE ORDER*\n`;
+            text += `------------------------------------\n`;
+            text += ` *Guest:* ${name.toUpperCase()}\n`;
+            text += ` *Address:* ${address.toUpperCase()}\n`;
+            text += `------------------------------------\n\n`;
+            text += `* SELECTION:*\n`;
+            cart.forEach(i => {
+                text += `• ${i.name} [x${i.qty}] - ₹${i.price * i.qty}\n`;
+            });
+            text += `\n------------------------------------\n`;
+            text += ` *TOTAL BILL: ₹${grandTotal}*\n`;
+            text += `------------------------------------\n`;
+            text += `_Thank you for choosing the heritage._`;
+            
+            window.open(`https://wa.me/${9669253573}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function bookViaWhatsApp() {
+            const name = document.getElementById('book-name').value;
+            const persons = document.getElementById('book-persons').value;
+            const date = document.getElementById('book-date').value;
+            
+            if(!name || !date) return alert("Please complete reservation details.");
+            
+            let text = `* DOSAMUCH TABLE RESERVATION*\n`;
+            text += `------------------------------------\n`;
+            text += ` *Guest:* ${name.toUpperCase()}\n`;
+            text += ` *Persons:* ${persons}\n`;
+            text += ` *Preferred Date:* ${date}\n`;
+            text += `------------------------------------\n`;
+            text += `_Requesting a royal table for a fine dining experience._`;
+            
+            window.open(`https://wa.me/${9669253573}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function initAnimations() {
+            const reveals = document.querySelectorAll('.reveal, .slide-right');
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, { threshold: 0.1 });
+            reveals.forEach(el => obs.observe(el));
+        }
+
+        function showNotification(msg) {
+            const n = document.getElementById('notification');
+            n.textContent = msg;
+            n.classList.add('show');
+            setTimeout(() => n.classList.remove('show'), 3000);
+        }
+
+        window.onload = () => {
+            lucide.createIcons();
+        };
+
+        window.onscroll = () => {
+            const nav = document.getElementById('main-nav');
+            if(window.scrollY > 50) nav.classList.add('shadow-xl', 'py-3');
+            else nav.classList.remove('shadow-xl', 'py-3');
+        };
+    </script>
+</body>
+</html>
